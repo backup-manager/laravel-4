@@ -1,5 +1,5 @@
 {
-  "name": "backup-manager/laravel",
+  "name": "bcalik/laravel",
   "description": "Database backup manager seamlessly integrated with Laravel 4 or 5 with user-definable procedures and support for S3, Dropbox, FTP, SFTP, and more.",
   "authors": [
     {
@@ -14,7 +14,7 @@
     }
   ],
   "require": {
-    "backup-manager/backup-manager": "^1.0",
+    "bcalik/backup-manager": "^1.0.8",
     "php": "^5.5.0",
     "symfony/process": "^2.0",
     "illuminate/support": "^4.0||^5.0",
