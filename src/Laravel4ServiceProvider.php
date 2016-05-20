@@ -67,6 +67,7 @@ class Laravel4ServiceProvider extends ServiceProvider {
             $provider = new Databases\DatabaseProvider($this->getDatabaseConfig($app['config']['database.connections']));
             $provider->add(new Databases\MysqlDatabase);
             $provider->add(new Databases\PostgresqlDatabase);
+            $provider->add(new Databases\MongoDatabase);
             return $provider;
         });
     }
@@ -128,7 +129,7 @@ class Laravel4ServiceProvider extends ServiceProvider {
      */
     private function getDatabaseConfig($connections) {
         $mapped = array_map(function ($connection) {
-            if ( ! in_array($connection['driver'], ['mysql', 'pgsql'])) {
+            if ( ! in_array($connection['driver'], ['mysql', 'pgsql', 'mongodb'])) {
                 return;
             }
 
@@ -139,6 +140,34 @@ class Laravel4ServiceProvider extends ServiceProvider {
                     $port = '3306';
                 } elseif ($connection['driver'] == 'pgsql') {
                     $port = '5432';
+                } elseif ($connection['driver'] == 'mongodb') {
+                    $port = '27017';
+                }
+            }
+
+            if($connection['driver'] == 'mongodb') {
+                //return config with authentication database
+                if(array_key_exists('options', $connection) && array_key_exists('database', $connection['options'])) {
+                    return [
+                        'type'     => $connection['driver'],
+                        'host'     => $connection['host'],
+                        'port'     => $port,
+                        'user'     => $connection['username'],
+                        'pass'     => $connection['password'],
+                        'database' => $connection['database'],
+                        'auth_db'  => $connection['options']['database'],
+                    ];
+                } else {
+                    //default authentication database is admin
+                    return [
+                        'type'     => $connection['driver'],
+                        'host'     => $connection['host'],
+                        'port'     => $port,
+                        'user'     => $connection['username'],
+                        'pass'     => $connection['password'],
+                        'database' => $connection['database'],
+                        'auth_db'  => 'admin',
+                    ];
                 }
             }
 
