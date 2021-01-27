@@ -29,9 +29,15 @@ trait GetDatabaseConfig
                 }
             }
 
+            if (isset($connection['host'])) {
+                $host = $connection['host'];
+            } else {
+                $host = $connection['read']['host'][0];
+            }
+
             return [
                 'type'     => $connection['driver'],
-                'host'     => $connection['host'],
+                'host'     => $host,
                 'port'     => $port,
                 'user'     => $connection['username'],
                 'pass'     => $connection['password'],
